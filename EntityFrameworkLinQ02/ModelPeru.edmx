@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="parainfoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="departamentos">
+          <Key>
+            <PropertyRef Name="iddepartamento" />
+          </Key>
+          <Property Name="iddepartamento" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="departamento" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="distritos">
+          <Key>
+            <PropertyRef Name="iddistrito" />
+          </Key>
+          <Property Name="iddistrito" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="idprovincia" Type="int" Nullable="false" />
+          <Property Name="distrito" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="provincias">
+          <Key>
+            <PropertyRef Name="idprovincia" />
+          </Key>
+          <Property Name="idprovincia" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="iddepartamento" Type="int" Nullable="false" />
+          <Property Name="provincia" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FKiddepartamento">
+          <End Role="departamentos" Type="Self.departamentos" Multiplicity="1" />
+          <End Role="provincias" Type="Self.provincias" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="departamentos">
+              <PropertyRef Name="iddepartamento" />
+            </Principal>
+            <Dependent Role="provincias">
+              <PropertyRef Name="iddepartamento" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FKidprovincia">
+          <End Role="provincias" Type="Self.provincias" Multiplicity="1" />
+          <End Role="distritos" Type="Self.distritos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="provincias">
+              <PropertyRef Name="idprovincia" />
+            </Principal>
+            <Dependent Role="distritos">
+              <PropertyRef Name="idprovincia" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="parainfoModelStoreContainer">
+          <EntitySet Name="departamentos" EntityType="Self.departamentos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="distritos" EntityType="Self.distritos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="provincias" EntityType="Self.provincias" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FKiddepartamento" Association="Self.FKiddepartamento">
+            <End Role="departamentos" EntitySet="departamentos" />
+            <End Role="provincias" EntitySet="provincias" />
+          </AssociationSet>
+          <AssociationSet Name="FKidprovincia" Association="Self.FKidprovincia">
+            <End Role="provincias" EntitySet="provincias" />
+            <End Role="distritos" EntitySet="distritos" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="parainfoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="departamentos">
+          <Key>
+            <PropertyRef Name="iddepartamento" />
+          </Key>
+          <Property Name="iddepartamento" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="departamento" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="provincias" Relationship="Self.FKiddepartamento" FromRole="departamentos" ToRole="provincias" />
+        </EntityType>
+        <EntityType Name="distritos">
+          <Key>
+            <PropertyRef Name="iddistrito" />
+          </Key>
+          <Property Name="iddistrito" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="distrito" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="provincias" Relationship="Self.FKidprovincia" FromRole="distritos" ToRole="provincias" />
+        </EntityType>
+        <EntityType Name="provincias">
+          <Key>
+            <PropertyRef Name="idprovincia" />
+          </Key>
+          <Property Name="idprovincia" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="provincia" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="departamentos" Relationship="Self.FKiddepartamento" FromRole="provincias" ToRole="departamentos" />
+          <NavigationProperty Name="distritos" Relationship="Self.FKidprovincia" FromRole="provincias" ToRole="distritos" />
+        </EntityType>
+        <Association Name="FKiddepartamento">
+          <End Role="departamentos" Type="Self.departamentos" Multiplicity="1" />
+          <End Role="provincias" Type="Self.provincias" Multiplicity="*" />
+        </Association>
+        <Association Name="FKidprovincia">
+          <End Role="provincias" Type="Self.provincias" Multiplicity="1" />
+          <End Role="distritos" Type="Self.distritos" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="parainfoEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="departamentos" EntityType="Self.departamentos" />
+          <EntitySet Name="distritos" EntityType="Self.distritos" />
+          <EntitySet Name="provincias" EntityType="Self.provincias" />
+          <AssociationSet Name="FKiddepartamento" Association="Self.FKiddepartamento">
+            <End Role="departamentos" EntitySet="departamentos" />
+            <End Role="provincias" EntitySet="provincias" />
+          </AssociationSet>
+          <AssociationSet Name="FKidprovincia" Association="Self.FKidprovincia">
+            <End Role="provincias" EntitySet="provincias" />
+            <End Role="distritos" EntitySet="distritos" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="parainfoModelStoreContainer" CdmEntityContainer="parainfoEntities">
+          <EntitySetMapping Name="departamentos">
+            <EntityTypeMapping TypeName="parainfoModel.departamentos">
+              <MappingFragment StoreEntitySet="departamentos">
+                <ScalarProperty Name="iddepartamento" ColumnName="iddepartamento" />
+                <ScalarProperty Name="departamento" ColumnName="departamento" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="distritos">
+            <EntityTypeMapping TypeName="parainfoModel.distritos">
+              <MappingFragment StoreEntitySet="distritos">
+                <ScalarProperty Name="iddistrito" ColumnName="iddistrito" />
+                <ScalarProperty Name="distrito" ColumnName="distrito" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="provincias">
+            <EntityTypeMapping TypeName="parainfoModel.provincias">
+              <MappingFragment StoreEntitySet="provincias">
+                <ScalarProperty Name="idprovincia" ColumnName="idprovincia" />
+                <ScalarProperty Name="provincia" ColumnName="provincia" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="FKiddepartamento" TypeName="parainfoModel.FKiddepartamento" StoreEntitySet="provincias">
+            <EndProperty Name="departamentos">
+              <ScalarProperty Name="iddepartamento" ColumnName="iddepartamento" />
+            </EndProperty>
+            <EndProperty Name="provincias">
+              <ScalarProperty Name="idprovincia" ColumnName="idprovincia" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="FKidprovincia" TypeName="parainfoModel.FKidprovincia" StoreEntitySet="distritos">
+            <EndProperty Name="provincias">
+              <ScalarProperty Name="idprovincia" ColumnName="idprovincia" />
+            </EndProperty>
+            <EndProperty Name="distritos">
+              <ScalarProperty Name="iddistrito" ColumnName="iddistrito" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
