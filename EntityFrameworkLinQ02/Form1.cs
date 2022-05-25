@@ -12,14 +12,54 @@ namespace EntityFrameworkLinQ02
 {
     public partial class Form1 : Form
     {
+        private int offset; // desplazamiento
+        private int pagesize;
+        private int totalfils;
+
         public Form1()
         {
             InitializeComponent();
+            offset = 0;
+            pagesize = 20;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            Inicio();
+            PintaGrilla();
+        }
 
+        private void PintaGrilla()
+        {
+            using (var db = new ModelPeru02())
+            {
+                DataTable table = CreaGrilla(new string[] { "Departamentos", "Provincias", "Distritos" });
+
+                var query = (from dist in db.distritos
+                             orderby dist.provincias.departamentos.departamento,
+                             dist.provincias.provincia
+                             select dist).Skip(offset).Take(pagesize);
+                            
+                foreach (var fil in query)
+                {
+                    table.Rows.Add(fil.provincias.departamentos.departamento, fil.provincias.provincia, fil.distrito);
+                }
+
+                dataGridView1.DataSource = table;
+
+                dataGridView1.DataSource = table;
+                label1.Text = pagesize + " filas a partir del registro " + offset;
+            }
+        }
+
+        private void Inicio()
+        {
+            using (var db = new ModelPeru02())
+            {
+                var query = (from d in db.distritos select d).ToList();
+                totalfils = query.Count;
+                label2.Text = "Cantidad de registros: " + totalfils;
+            }
         }
 
         private DataTable CreaGrilla(string[] titulos)
@@ -35,28 +75,47 @@ namespace EntityFrameworkLinQ02
 
         private void button1_Click(object sender, EventArgs e)
         {
-            using (var db = new ModelPeru02())
+            offset = 0;
+            PintaGrilla();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            offset -= 20;
+
+            if (offset < 0)
             {
-                DataTable table = CreaGrilla(new string[] { "Departamentos", "Provincias", "Distritos" });
-
-                var query = from a in db.departamentos
-                            join n in db.provincias on a.iddepartamento equals n.iddepartamento
-                            join d in db.distritos on n.idprovincia equals d.idprovincia
-                            select new
-                            {
-                                nombre = a.departamento,
-                                nota = n.provincia,
-                                dis = d.distrito
-                            };
-
-                foreach (var fil in query)
-                {
-                    table.Rows.Add(fil.nombre, fil.nota, fil.dis);
-                }
-
-                dataGridView1.DataSource = table;
-
+                offset += 20;
+                MessageBox.Show("No hay más páginas a la izquierda");
             }
+            else
+            {
+                PintaGrilla();
+            }
+            
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            offset += 20;
+
+            if (offset > totalfils)
+            {
+                offset -= 20;
+                MessageBox.Show("No hay más páginas a la derecha");
+            }
+            else
+            {
+                PintaGrilla();
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            offset = totalfils % pagesize == 0 ? 
+                    totalfils - pagesize : 
+                    totalfils - totalfils % pagesize;
+            PintaGrilla();
         }
     }
 }

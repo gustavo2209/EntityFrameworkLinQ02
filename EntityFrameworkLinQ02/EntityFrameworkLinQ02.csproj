@@ -136,6 +136,7 @@
       <DependentUpon>ModelPeru.edmx</DependentUpon>
       <LastGenOutput>ModelPeru.cs</LastGenOutput>
     </Content>
+    <None Include="Resources\back09.png" />
     <None Include="Resources\mlast.png" />
     <None Include="Resources\mnext.png" />
     <None Include="Resources\mprev.png" />
